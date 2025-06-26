@@ -1,0 +1,57 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches-ignore:
+      - '**'
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  build_and_push_image:
+    name: Docker
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/docker_build_and_push.yaml@main
+    with:
+      AWS_REGION: us-east-1
+      APP_NAME: go-template
+    secrets: inherit
+
+  upload_env_vars:
+    name: Environment vars
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/s3_upload_env_file.yaml@main
+    needs: build_and_push_image
+    with:
+      APP_NAME: go-template
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+      ENV_FILE_TYPE: all
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      OIDC_IAM_ROLE: ${{ secrets.OIDC_IAM_ROLE }}
+
+  deploy_to_dev:
+    name: Development
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/deploy_ecs.yaml@main
+    needs: upload_env_vars
+    if: github.ref == 'refs/heads/develop'
+    with:
+      APP_NAME: go-template
+      ENV_ACCOUNT_ID: '571168450468'
+      ECR_REPO_NAME: go-template
+      DOCKER_IMAGE_TAG: ${{needs.build_and_push_image.outputs.image_tag}}
+    secrets: inherit
+
+  argocd_dev:
+    name: ArgoCD Development
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/argocd_deployment.yaml@main
+    needs: deploy_to_dev
+    if: github.ref == 'refs/heads/develop'
+    with:
+      APP_NAME: go-template
+      ENVIRONMENT: dev
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      ARGOCD_TOKEN: ${{ secrets.ARGOCD_DEV_GITHUB }}

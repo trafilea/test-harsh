@@ -1,0 +1,84 @@
+name: Manual Deploy DEV & Staging
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'The environment you want to deploy on - Can be dev or stage'
+        required: true
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: write  # This is required for actions/checkout
+  pull-requests: write
+
+jobs:
+  build_and_push_image:
+    name: Docker
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/docker_build_and_push.yaml@main
+    if: inputs.environment == 'dev' || inputs.environment == 'stage'
+    with:
+      AWS_REGION: us-east-1
+      APP_NAME: go-template
+    secrets: inherit
+
+  upload_env_vars:
+    name: Environment vars
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/s3_upload_env_file.yaml@main
+    needs: build_and_push_image
+    with:
+      APP_NAME: go-template
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+      ENV_FILE_TYPE: all
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      OIDC_IAM_ROLE: ${{ secrets.OIDC_IAM_ROLE }}
+
+  deploy_to_stage:
+    name: Staging
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/deploy_terragrunt.yaml@main
+    needs: upload_env_vars
+    if: inputs.environment == 'stage'
+    with:
+      APP_NAME: go-template
+      ENVIRONMENT: ${{ inputs.environment }}
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+    secrets: inherit
+
+  argocd_stage:
+    name: ArgoCD Staging
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/argocd_deployment.yaml@main
+    needs: deploy_to_stage
+    if: inputs.environment == 'stage'
+    with:
+      APP_NAME: go-template
+      ENVIRONMENT: stage
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      ARGOCD_TOKEN: ${{ secrets.ARGOCD_STAGE_GITHUB }}
+      OIDC_IAM_ROLE: ${{ secrets.OIDC_IAM_ROLE }}
+
+  deploy_to_dev:
+    name: Development
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/deploy_terragrunt.yaml@main
+    needs: upload_env_vars
+    if: inputs.environment == 'dev'
+    with:
+      APP_NAME: go-template
+      ENVIRONMENT: ${{ inputs.environment }}
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+    secrets: inherit
+
+  argocd_dev:
+    if: inputs.environment == 'dev'
+    name: ArgoCD Development
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/argocd_deployment.yaml@main
+    needs: deploy_to_dev
+    with:
+      APP_NAME: go-template
+      ENVIRONMENT: dev
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      ARGOCD_TOKEN: ${{ secrets.ARGOCD_DEV_GITHUB }}
+      OIDC_IAM_ROLE: ${{ secrets.OIDC_IAM_ROLE }}

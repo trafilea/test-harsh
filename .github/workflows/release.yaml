@@ -1,0 +1,30 @@
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  build_and_push_image:
+    name: ECR
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/docker_release.yaml@main
+    with:
+      AWS_REGION: us-east-1
+      APP_NAME: go-template
+      TAG: ${{ github.ref_name }}
+    secrets: inherit
+
+  upload_env_vars:
+    name: Environment vars
+    uses: trafilea/trafilea-reusable-workflows/.github/workflows/s3_upload_env_file.yaml@main
+    needs: build_and_push_image
+    with:
+      APP_NAME: go-template
+      DOCKER_IMAGE_TAG: ${{ needs.build_and_push_image.outputs.image_tag }}
+      ENV_FILE_TYPE: all
+    secrets:
+      GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
+      OIDC_IAM_ROLE: ${{ secrets.OIDC_IAM_ROLE }}

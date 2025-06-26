@@ -1,0 +1,155 @@
+openapi: 3.0.3
+info:
+  title: Address API
+  description: API endpoints for managing customer addresses
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:8082/api/v1
+    description: Local development server
+
+paths:
+  /customers/{customerId}/address:
+    get:
+      summary: Get customer address
+      description: Retrieves the address details for a specific customer
+      operationId: getCustomerAddress
+      tags:
+        - addresses
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+          example: 123
+      responses:
+        '200':
+          description: Successfully retrieved customer address
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+              example:
+                id: 1
+                customerId: 123
+                street: "123 Main Street"
+                city: "San Francisco"
+                state: "CA"
+                postalCode: "94105"
+                country: "USA"
+                type: "SHIPPING"
+                isDefault: true
+        '400':
+          description: Invalid customer ID provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_REQUEST"
+                message: "Invalid customer ID"
+        '404':
+          description: Address not found for the customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "Address not found for customer"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INTERNAL_ERROR"
+                message: "Internal server error"
+
+components:
+  schemas:
+    Address:
+      type: object
+      description: Customer address details
+      required:
+        - id
+        - customerId
+        - street
+        - city
+        - state
+        - postalCode
+        - country
+        - type
+        - isDefault
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the address
+          example: 1
+        customerId:
+          type: integer
+          format: int64
+          description: ID of the customer this address belongs to
+          example: 123
+        street:
+          type: string
+          description: Street address including house/building number
+          example: "123 Main Street"
+        city:
+          type: string
+          description: City name
+          example: "San Francisco"
+        state:
+          type: string
+          description: State or province
+          example: "CA"
+        postalCode:
+          type: string
+          description: Postal or ZIP code
+          example: "94105"
+        country:
+          type: string
+          description: Country name or code
+          example: "USA"
+        type:
+          type: string
+          description: Type of address (shipping, billing, etc.)
+          enum: ["SHIPPING", "BILLING", "BOTH"]
+          example: "SHIPPING"
+        isDefault:
+          type: boolean
+          description: Whether this is the default address for the customer
+          example: true
+
+    ErrorResponse:
+      type: object
+      description: Standard error response structure
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code identifying the type of error
+          enum:
+            - INVALID_REQUEST
+            - NOT_FOUND
+            - INTERNAL_ERROR
+          example: "NOT_FOUND"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Address not found for customer"
+
+tags:
+  - name: addresses
+    description: Operations related to customer addresses 

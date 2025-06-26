@@ -65,7 +65,7 @@ spec:
     info:
       title: Address API
       description: API endpoints for managing customer addresses
-      version: 1.0.0
+      version: 1.1.0
       contact:
         name: API Support
         email: support@example.com
@@ -217,4 +217,4 @@ spec:
   meta:
     id: spc_e16ef13805944cc8be920c553f1daff3
     created: 1750970987607
-    modified: 1750970987608
+    modified: 1750971163833

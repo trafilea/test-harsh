@@ -157,6 +157,61 @@ paths:
               example:
                 code: "INTERNAL_ERROR"
                 message: "Internal server error"
+    delete:
+      summary: Delete customer address
+      description: Deletes the address for a specific customer
+      operationId: deleteCustomerAddress
+      tags:
+        - addresses
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+          example: 123
+      responses:
+        '204':
+          description: Address successfully deleted (no content)
+        '400':
+          description: Invalid customer ID provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_REQUEST"
+                message: "Invalid customer ID"
+        '404':
+          description: Address not found for the customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "Address not found for customer"
+        '409':
+          description: Cannot delete address due to business constraints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "CONFLICT"
+                message: "Cannot delete the only address for customer"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INTERNAL_ERROR"
+                message: "Internal server error"
 
 components:
   schemas:

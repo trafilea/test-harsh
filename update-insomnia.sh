@@ -6,7 +6,7 @@
 set -e
 
 OPENAPI_FILE="address.yml"
-INSOMNIA_FILE="Address API 1.0.0-wrk_40d19e55fc174fb5a8585ae34f8f564f.yaml"
+INSOMNIA_FILE="address_insomnia.yaml"
 TEMP_FILE="temp-insomnia-update.yml"
 BACKUP_FILE="${INSOMNIA_FILE}.backup"
 

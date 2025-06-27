@@ -3,25 +3,34 @@ name: Users API 1.0.0
 meta:
     id: wrk_50d29e66fc274fb6a9696ae35f9f675g
     created: 1750970987605
-    modified: 1751036988218
+    modified: 1751034981040
 collection:
     - name: users
       meta:
         id: fld_2ce885658947413caee63a9c55a71431
-        created: 1751036988224
-        modified: 1751036988224
+        created: 1751034981046
+        modified: 1751034981046
         description: Operations related to users
-        sortKey: -1751036988219
+        sortKey: -1751034981041
       children:
         - url: '{{ _.base_url }}/users'
           name: Get all users
           meta:
-            id: req_016862632b9aee377d2241ce62449b6a
-            created: 1751036988229
-            modified: 1751036988229
+            id: req_e2705c966a6dcba2eab87e89f42ab549
+            created: 1751034981051
+            modified: 1751034981051
             description: Retrieves a list of all users
-            sortKey: -1751036988219
+            sortKey: -1751034981041
           method: GET
+          parameters:
+            - name: limit
+              value: '10'
+              disabled: false
+              id: pair_limit_001
+            - name: offset
+              value: '0'
+              disabled: false
+              id: pair_offset_001
           settings:
             renderRequestBody: true
             encodeUrl: true
@@ -33,11 +42,11 @@ collection:
         - url: '{{ _.base_url }}/users/{{ _.userId }}'
           name: Get user by ID
           meta:
-            id: req_b85cafce5bdc7a025da621296f2fdbe5
-            created: 1751036988229
-            modified: 1751036988229
+            id: req_f2705c966a6dcba2eab87e89f42ab550
+            created: 1751034981052
+            modified: 1751034981052
             description: Retrieves a specific user by their unique identifier
-            sortKey: -1751036988218
+            sortKey: -1751034981040
           method: GET
           settings:
             renderRequestBody: true
@@ -51,31 +60,60 @@ cookieJar:
     name: Default Jar
     meta:
         id: jar_c80e364e9488b026ad6f2f58d668708e208ac00f
-        created: 1751036988214
-        modified: 1751036988214
+        created: 1751034981036
+        modified: 1751034981036
 environments:
     name: Base Environment
     meta:
         id: env_c80e364e9488b026ad6f2f58d668708e208ac00f
-        created: 1751036988212
-        modified: 1751036988227
+        created: 1751034981034
+        modified: 1751034981049
     data:
         base_url: '{{ _.scheme }}://{{ _.host }}{{ _.base_path }}'
     subEnvironments:
         - name: OpenAPI env localhost:8082
           meta:
-            id: env_84c360468f0bceee03103ff9c05ba1b6
-            created: 1751036988228
-            modified: 1751036988228
-            sortKey: 1751036988228
+            id: env_9a49e1b572893ffea49b22caf93d0fd4
+            created: 1751034981050
+            modified: 1751034981050
+            sortKey: 1751034981050
           data:
             scheme: http
             base_path: /api/v1
             host: localhost:8082
+            userId: '123'
 spec:
     contents:
         components:
             schemas:
+                User:
+                    description: User details
+                    properties:
+                        id:
+                            description: Unique identifier for the user
+                            example: 1
+                            format: int64
+                            type: integer
+                        name:
+                            description: Full name of the user
+                            example: John Doe
+                            type: string
+                        email:
+                            description: Email address of the user
+                            example: john.doe@example.com
+                            format: email
+                            type: string
+                        phone:
+                            description: Phone number of the user
+                            example: "+1-555-123-4567"
+                            pattern: '^\+?[1-9]\d{1,14}$'
+                            type: string
+                    required:
+                        - id
+                        - name
+                        - email
+                        - phone
+                    type: object
                 ErrorResponse:
                     description: Standard error response structure
                     properties:
@@ -95,34 +133,6 @@ spec:
                     required:
                         - code
                         - message
-                    type: object
-                User:
-                    description: User details
-                    properties:
-                        email:
-                            description: Email address of the user
-                            example: john.doe@example.com
-                            format: email
-                            type: string
-                        id:
-                            description: Unique identifier for the user
-                            example: 1
-                            format: int64
-                            type: integer
-                        name:
-                            description: Full name of the user
-                            example: John Doe
-                            type: string
-                        phone:
-                            description: Phone number of the user
-                            example: +1-555-123-4567
-                            pattern: ^\+?[1-9]\d{1,14}$
-                            type: string
-                    required:
-                        - id
-                        - name
-                        - email
-                        - phone
                     type: object
         info:
             contact:
@@ -169,11 +179,11 @@ spec:
                                             - email: john.doe@example.com
                                               id: 1
                                               name: John Doe
-                                              phone: +1-555-123-4567
+                                              phone: "+1-555-123-4567"
                                             - email: jane.smith@example.com
                                               id: 2
                                               name: Jane Smith
-                                              phone: +1-555-987-6543
+                                              phone: "+1-555-987-6543"
                                     schema:
                                         properties:
                                             limit:
@@ -190,7 +200,7 @@ spec:
                                                 type: integer
                                             users:
                                                 items:
-                                                    $ref: '#/components/schemas/User'
+                                                    $ref: "#/components/schemas/User"
                                                 type: array
                                         type: object
                             description: Successfully retrieved users
@@ -201,7 +211,7 @@ spec:
                                         code: INVALID_REQUEST
                                         message: Invalid limit or offset parameters
                                     schema:
-                                        $ref: '#/components/schemas/ErrorResponse'
+                                        $ref: "#/components/schemas/ErrorResponse"
                             description: Invalid query parameters
                         "500":
                             content:
@@ -210,12 +220,12 @@ spec:
                                         code: INTERNAL_ERROR
                                         message: Internal server error
                                     schema:
-                                        $ref: '#/components/schemas/ErrorResponse'
+                                        $ref: "#/components/schemas/ErrorResponse"
                             description: Internal server error
                     summary: Get all users
                     tags:
                         - users
-            /users/{userId}:
+            "/users/{userId}":
                 get:
                     description: Retrieves a specific user by their unique identifier
                     operationId: getUserById
@@ -237,9 +247,9 @@ spec:
                                         email: john.doe@example.com
                                         id: 123
                                         name: John Doe
-                                        phone: +1-555-123-4567
+                                        phone: "+1-555-123-4567"
                                     schema:
-                                        $ref: '#/components/schemas/User'
+                                        $ref: "#/components/schemas/User"
                             description: Successfully retrieved user
                         "400":
                             content:
@@ -248,7 +258,7 @@ spec:
                                         code: INVALID_REQUEST
                                         message: Invalid user ID
                                     schema:
-                                        $ref: '#/components/schemas/ErrorResponse'
+                                        $ref: "#/components/schemas/ErrorResponse"
                             description: Invalid user ID provided
                         "404":
                             content:
@@ -257,7 +267,7 @@ spec:
                                         code: NOT_FOUND
                                         message: User not found
                                     schema:
-                                        $ref: '#/components/schemas/ErrorResponse'
+                                        $ref: "#/components/schemas/ErrorResponse"
                             description: User not found
                         "500":
                             content:
@@ -266,7 +276,7 @@ spec:
                                         code: INTERNAL_ERROR
                                         message: Internal server error
                                     schema:
-                                        $ref: '#/components/schemas/ErrorResponse'
+                                        $ref: "#/components/schemas/ErrorResponse"
                             description: Internal server error
                     summary: Get user by ID
                     tags:
@@ -276,8 +286,4 @@ spec:
               url: http://localhost:8082/api/v1
         tags:
             - description: Operations related to users
-              name: users
-    meta:
-        id: spc_d88a995b5aefd99a5f60b548a5347ffe
-        created: 1751036988222
-        modified: 1751036988223
+              name: users 

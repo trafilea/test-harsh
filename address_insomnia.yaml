@@ -3,24 +3,24 @@ name: Address API 1.0.0
 meta:
     id: wrk_40d19e55fc174fb5a8585ae34f8f564f
     created: 1750970987604
-    modified: 1751036363162
+    modified: 1751036988344
 collection:
     - name: addresses
       meta:
         id: fld_1ce885658947413caee63a9c55a71430
-        created: 1751036363168
-        modified: 1751036363168
+        created: 1751036988350
+        modified: 1751036988350
         description: Operations related to customer addresses
-        sortKey: -1751036363163
+        sortKey: -1751036988345
       children:
         - url: '{{ _.base_url }}/customers/{{ _.customerId }}/address'
           name: Get customer address
           meta:
-            id: req_3219f37f184924fa96035569d497173e
-            created: 1751036363173
-            modified: 1751036363173
+            id: req_e35c0babbceb95a860d8e50d9fdfd1fe
+            created: 1751036988355
+            modified: 1751036988355
             description: Retrieves the address details for a specific customer
-            sortKey: -1751036363163
+            sortKey: -1751036988345
           method: GET
           settings:
             renderRequestBody: true
@@ -33,11 +33,11 @@ collection:
         - url: '{{ _.base_url }}/customers/{{ _.customerId }}/address'
           name: Create customer address
           meta:
-            id: req_4d1e5e2cdeb4a205099799e02e7b0ada
-            created: 1751036363173
-            modified: 1751036363173
+            id: req_f3782cfa038ead6e6dbca7c90e6de085
+            created: 1751036988355
+            modified: 1751036988355
             description: Creates a new address for a specific customer
-            sortKey: -1751036363162
+            sortKey: -1751036988344
           method: POST
           settings:
             renderRequestBody: true
@@ -50,11 +50,11 @@ collection:
         - url: '{{ _.base_url }}/customers/{{ _.customerId }}/address'
           name: Delete customer address
           meta:
-            id: req_8e1899cde23d8ec66bfe03e242e456c9
-            created: 1751036363173
-            modified: 1751036363173
+            id: req_16f9b01aeff6f24e2946d451e5d88e5b
+            created: 1751036988355
+            modified: 1751036988355
             description: Deletes the address for a specific customer
-            sortKey: -1751036363161
+            sortKey: -1751036988343
           method: DELETE
           settings:
             renderRequestBody: true
@@ -68,23 +68,23 @@ cookieJar:
     name: Default Jar
     meta:
         id: jar_b80e364e9488b026ad6f2f58d668708e208ac00e
-        created: 1751036363158
-        modified: 1751036363158
+        created: 1751036988340
+        modified: 1751036988340
 environments:
     name: Base Environment
     meta:
         id: env_b80e364e9488b026ad6f2f58d668708e208ac00e
-        created: 1751036363156
-        modified: 1751036363171
+        created: 1751036988338
+        modified: 1751036988353
     data:
         base_url: '{{ _.scheme }}://{{ _.host }}{{ _.base_path }}'
     subEnvironments:
         - name: OpenAPI env localhost:8082
           meta:
-            id: env_632fca6215fc38fd2c70625835b13d73
-            created: 1751036363172
-            modified: 1751036363172
-            sortKey: 1751036363172
+            id: env_2e7aba19436fe239ab0e1c1aa15b83f8
+            created: 1751036988354
+            modified: 1751036988354
+            sortKey: 1751036988354
           data:
             scheme: http
             base_path: /api/v1
@@ -430,5 +430,5 @@ spec:
               name: addresses
     meta:
         id: spc_e16ef13805944cc8be920c553f1daff3
-        created: 1751036363166
-        modified: 1751036363167
+        created: 1751036988348
+        modified: 1751036988349

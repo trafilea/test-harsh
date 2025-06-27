@@ -1,367 +1,362 @@
 type: spec.insomnia.rest/5.0
 name: Address API 1.0.0
 meta:
-  id: wrk_40d19e55fc174fb5a8585ae34f8f564f
-  created: 1750970987604
-  modified: 1751033400000
-  description: ""
+    id: wrk_40d19e55fc174fb5a8585ae34f8f564f
+    created: 1750970987604
+    modified: 1751034437449
 collection:
-  - name: addresses
-    meta:
-      id: fld_1ce885658947413caee63a9c55a71430
-      created: 1750971001456
-      modified: 1750971001456
-      sortKey: -1750971001456
-      description: Operations related to customer addresses
-    children:
-      - url: "{{ _.base_url }}/customers/{{ _.customerId }}/address"
-        name: Get customer address
-        meta:
-          id: req_946c75f9b05f49b4858bcc3d0311a99a
-          created: 1750971001456
-          modified: 1750971001456
-          isPrivate: false
-          description: Retrieves the address details for a specific customer
-          sortKey: -1750971001456
-        method: GET
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-      - url: "{{ _.base_url }}/customers/{{ _.customerId }}/address"
-        name: Create customer address
-        meta:
-          id: req_2a4b6c8d9e0f1a2b3c4d5e6f7a8b9c0d
-          created: 1750971001457
-          modified: 1750971001457
-          isPrivate: false
-          description: Creates a new address for a specific customer
-          sortKey: -1750971001455
-        method: POST
-        settings:
-          renderRequestBody: true
-          encodeUrl: true
-          followRedirects: global
-          cookies:
-            send: true
-            store: true
-          rebuildPath: true
-cookieJar:
-  name: Default Jar
-  meta:
-    id: jar_b80e364e9488b026ad6f2f58d668708e208ac00e
-    created: 1750970991834
-    modified: 1750970991834
-environments:
-  name: Base Environment
-  meta:
-    id: env_b80e364e9488b026ad6f2f58d668708e208ac00e
-    created: 1750970991832
-    modified: 1750971001454
-    isPrivate: false
-  data:
-    base_url: "{{ _.scheme }}://{{ _.host }}{{ _.base_path }}"
-  subEnvironments:
-    - name: OpenAPI env localhost:8082
+    - name: addresses
       meta:
-        id: env_9f9b5301bd194d35bbb1b148df81086d
-        created: 1750971001455
-        modified: 1750971001455
-        isPrivate: false
-        sortKey: 1750971001455
-      data:
-        scheme: http
-        base_path: /api/v1
-        host: localhost:8082
-spec:
-  contents:
-    openapi: 3.0.3
-    info:
-      title: Address API
-      description: API endpoints for managing customer addresses
-      version: 1.0.0
-      contact:
-        name: API Support
-        email: support@example.com
-    servers:
-      - url: http://localhost:8082/api/v1
-        description: Local development server
-    paths:
-      /customers/{customerId}/address:
-        get:
-          summary: Get customer address
-          description: Retrieves the address details for a specific customer
-          operationId: getCustomerAddress
-          tags:
-            - addresses
-          parameters:
-            - name: customerId
-              in: path
-              required: true
-              description: Unique identifier of the customer
-              schema:
-                type: integer
-                format: int64
-                minimum: 1
-              example: 123
-          responses:
-            "200":
-              description: Successfully retrieved customer address
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/Address"
-                  example:
-                    id: 1
-                    customerId: 123
-                    street: 123 Main Street
-                    city: San Francisco
-                    state: CA
-                    postalCode: "94105"
-                    country: USA
-                    type: SHIPPING
-                    isDefault: true
-            "400":
-              description: Invalid customer ID provided
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: INVALID_REQUEST
-                    message: Invalid customer ID
-            "404":
-              description: Address not found for the customer
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: NOT_FOUND
-                    message: Address not found for customer
-            "500":
-              description: Internal server error
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: INTERNAL_ERROR
-                    message: Internal server error
-        post:
-          summary: Create customer address
-          description: Creates a new address for a specific customer
-          operationId: createCustomerAddress
-          tags:
-            - addresses
-          parameters:
-            - name: customerId
-              in: path
-              required: true
-              description: Unique identifier of the customer
-              schema:
-                type: integer
-                format: int64
-                minimum: 1
-              example: 123
-          requestBody:
-            required: true
-            description: Address details to create
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/AddressRequest"
-                example:
-                  street: 456 Oak Avenue
-                  city: Los Angeles
-                  state: CA
-                  postalCode: "90210"
-                  country: USA
-                  type: BILLING
-                  isDefault: false
-          responses:
-            "201":
-              description: Address successfully created
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/Address"
-                  example:
-                    id: 2
-                    customerId: 123
-                    street: 456 Oak Avenue
-                    city: Los Angeles
-                    state: CA
-                    postalCode: "90210"
-                    country: USA
-                    type: BILLING
-                    isDefault: false
-            "400":
-              description: Invalid request data
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: INVALID_REQUEST
-                    message: Invalid address data provided
-            "404":
-              description: Customer not found
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: NOT_FOUND
-                    message: Customer not found
-            "409":
-              description: Address already exists or conflict
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: CONFLICT
-                    message: Default address already exists for customer
-            "500":
-              description: Internal server error
-              content:
-                application/json:
-                  schema:
-                    $ref: "#/components/schemas/ErrorResponse"
-                  example:
-                    code: INTERNAL_ERROR
-                    message: Internal server error
-    components:
-      schemas:
-        Address:
-          type: object
-          description: Customer address details
-          required:
-            - id
-            - customerId
-            - street
-            - city
-            - state
-            - postalCode
-            - country
-            - type
-            - isDefault
-          properties:
-            id:
-              type: integer
-              format: int64
-              description: Unique identifier for the address
-              example: 1
-            customerId:
-              type: integer
-              format: int64
-              description: ID of the customer this address belongs to
-              example: 123
-            street:
-              type: string
-              description: Street address including house/building number
-              example: 123 Main Street
-            city:
-              type: string
-              description: City name
-              example: San Francisco
-            state:
-              type: string
-              description: State or province
-              example: CA
-            postalCode:
-              type: string
-              description: Postal or ZIP code
-              example: "94105"
-            country:
-              type: string
-              description: Country name or code
-              example: USA
-            type:
-              type: string
-              description: Type of address (shipping, billing, etc.)
-              enum:
-                - SHIPPING
-                - BILLING
-                - BOTH
-              example: SHIPPING
-            isDefault:
-              type: boolean
-              description: Whether this is the default address for the customer
-              example: true
-        AddressRequest:
-          type: object
-          description: Request payload for creating a new address
-          required:
-            - street
-            - city
-            - state
-            - postalCode
-            - country
-            - type
-            - isDefault
-          properties:
-            street:
-              type: string
-              description: Street address including house/building number
-              example: 456 Oak Avenue
-            city:
-              type: string
-              description: City name
-              example: Los Angeles
-            state:
-              type: string
-              description: State or province
-              example: CA
-            postalCode:
-              type: string
-              description: Postal or ZIP code
-              example: "90210"
-            country:
-              type: string
-              description: Country name or code
-              example: USA
-            type:
-              type: string
-              description: Type of address (shipping, billing, etc.)
-              enum:
-                - SHIPPING
-                - BILLING
-                - BOTH
-              example: BILLING
-            isDefault:
-              type: boolean
-              description: Whether this should be the default address for the customer
-              example: false
-        ErrorResponse:
-          type: object
-          description: Standard error response structure
-          required:
-            - code
-            - message
-          properties:
-            code:
-              type: string
-              description: Error code identifying the type of error
-              enum:
-                - INVALID_REQUEST
-                - NOT_FOUND
-                - CONFLICT
-                - INTERNAL_ERROR
-              example: NOT_FOUND
-            message:
-              type: string
-              description: Human-readable error message
-              example: Address not found for customer
-    tags:
-      - name: addresses
+        id: fld_1ce885658947413caee63a9c55a71430
+        created: 1751034437455
+        modified: 1751034437455
         description: Operations related to customer addresses
-  meta:
-    id: spc_e16ef13805944cc8be920c553f1daff3
-    created: 1750970987607
-    modified: 1750970987608
+        sortKey: -1751034437450
+      children:
+        - url: '{{ _.base_url }}/customers/{{ _.customerId }}/address'
+          name: Get customer address
+          meta:
+            id: req_9b3a242eb795ef823c9e4fbcc9ee2c0b
+            created: 1751034437460
+            modified: 1751034437460
+            description: Retrieves the address details for a specific customer
+            sortKey: -1751034437450
+          method: GET
+          settings:
+            renderRequestBody: true
+            encodeUrl: true
+            followRedirects: global
+            cookies:
+                send: true
+                store: true
+            rebuildPath: true
+        - url: '{{ _.base_url }}/customers/{{ _.customerId }}/address'
+          name: Create customer address
+          meta:
+            id: req_a40331f1aa54c79966cb5c767ec49aa1
+            created: 1751034437460
+            modified: 1751034437460
+            description: Creates a new address for a specific customer
+            sortKey: -1751034437449
+          method: POST
+          settings:
+            renderRequestBody: true
+            encodeUrl: true
+            followRedirects: global
+            cookies:
+                send: true
+                store: true
+            rebuildPath: true
+cookieJar:
+    name: Default Jar
+    meta:
+        id: jar_b80e364e9488b026ad6f2f58d668708e208ac00e
+        created: 1751034437445
+        modified: 1751034437445
+environments:
+    name: Base Environment
+    meta:
+        id: env_b80e364e9488b026ad6f2f58d668708e208ac00e
+        created: 1751034437443
+        modified: 1751034437458
+    data:
+        base_url: '{{ _.scheme }}://{{ _.host }}{{ _.base_path }}'
+    subEnvironments:
+        - name: OpenAPI env localhost:8082
+          meta:
+            id: env_d04ca0967bda12273528fe7f1a6a5d6a
+            created: 1751034437459
+            modified: 1751034437459
+            sortKey: 1751034437459
+          data:
+            scheme: http
+            base_path: /api/v1
+            host: localhost:8082
+spec:
+    contents:
+        components:
+            schemas:
+                Address:
+                    description: Customer address details
+                    properties:
+                        city:
+                            description: City name
+                            example: San Francisco
+                            type: string
+                        country:
+                            description: Country name or code
+                            example: USA
+                            type: string
+                        customerId:
+                            description: ID of the customer this address belongs to
+                            example: 123
+                            format: int64
+                            type: integer
+                        id:
+                            description: Unique identifier for the address
+                            example: 1
+                            format: int64
+                            type: integer
+                        isDefault:
+                            description: Whether this is the default address for the customer
+                            example: true
+                            type: boolean
+                        postalCode:
+                            description: Postal or ZIP code
+                            example: "94105"
+                            type: string
+                        state:
+                            description: State or province
+                            example: CA
+                            type: string
+                        street:
+                            description: Street address including house/building number
+                            example: 123 Main Street
+                            type: string
+                        type:
+                            description: Type of address (shipping, billing, etc.)
+                            enum:
+                                - SHIPPING
+                                - BILLING
+                                - BOTH
+                            example: SHIPPING
+                            type: string
+                    required:
+                        - id
+                        - customerId
+                        - street
+                        - city
+                        - state
+                        - postalCode
+                        - country
+                        - type
+                        - isDefault
+                    type: object
+                AddressRequest:
+                    description: Request payload for creating a new address
+                    properties:
+                        city:
+                            description: City name
+                            example: Los Angeles
+                            type: string
+                        country:
+                            description: Country name or code
+                            example: USA
+                            type: string
+                        isDefault:
+                            description: Whether this should be the default address for the customer
+                            example: false
+                            type: boolean
+                        postalCode:
+                            description: Postal or ZIP code
+                            example: "90210"
+                            type: string
+                        state:
+                            description: State or province
+                            example: CA
+                            type: string
+                        street:
+                            description: Street address including house/building number
+                            example: 456 Oak Avenue
+                            type: string
+                        type:
+                            description: Type of address (shipping, billing, etc.)
+                            enum:
+                                - SHIPPING
+                                - BILLING
+                                - BOTH
+                            example: BILLING
+                            type: string
+                    required:
+                        - street
+                        - city
+                        - state
+                        - postalCode
+                        - country
+                        - type
+                        - isDefault
+                    type: object
+                ErrorResponse:
+                    description: Standard error response structure
+                    properties:
+                        code:
+                            description: Error code identifying the type of error
+                            enum:
+                                - INVALID_REQUEST
+                                - NOT_FOUND
+                                - CONFLICT
+                                - INTERNAL_ERROR
+                            example: NOT_FOUND
+                            type: string
+                        message:
+                            description: Human-readable error message
+                            example: Address not found for customer
+                            type: string
+                    required:
+                        - code
+                        - message
+                    type: object
+        info:
+            contact:
+                email: support@example.com
+                name: API Support
+            description: API endpoints for managing customer addresses
+            title: Address API
+            version: 1.0.0
+        openapi: 3.0.3
+        paths:
+            /customers/{customerId}/address:
+                get:
+                    description: Retrieves the address details for a specific customer
+                    operationId: getCustomerAddress
+                    parameters:
+                        - description: Unique identifier of the customer
+                          example: 123
+                          in: path
+                          name: customerId
+                          required: true
+                          schema:
+                            format: int64
+                            minimum: 1
+                            type: integer
+                    responses:
+                        "200":
+                            content:
+                                application/json:
+                                    example:
+                                        city: San Francisco
+                                        country: USA
+                                        customerId: 123
+                                        id: 1
+                                        isDefault: true
+                                        postalCode: "94105"
+                                        state: CA
+                                        street: 123 Main Street
+                                        type: SHIPPING
+                                    schema:
+                                        $ref: '#/components/schemas/Address'
+                            description: Successfully retrieved customer address
+                        "400":
+                            content:
+                                application/json:
+                                    example:
+                                        code: INVALID_REQUEST
+                                        message: Invalid customer ID
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Invalid customer ID provided
+                        "404":
+                            content:
+                                application/json:
+                                    example:
+                                        code: NOT_FOUND
+                                        message: Address not found for customer
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Address not found for the customer
+                        "500":
+                            content:
+                                application/json:
+                                    example:
+                                        code: INTERNAL_ERROR
+                                        message: Internal server error
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Internal server error
+                    summary: Get customer address
+                    tags:
+                        - addresses
+                post:
+                    description: Creates a new address for a specific customer
+                    operationId: createCustomerAddress
+                    parameters:
+                        - description: Unique identifier of the customer
+                          example: 123
+                          in: path
+                          name: customerId
+                          required: true
+                          schema:
+                            format: int64
+                            minimum: 1
+                            type: integer
+                    requestBody:
+                        content:
+                            application/json:
+                                example:
+                                    city: Los Angeles
+                                    country: USA
+                                    isDefault: false
+                                    postalCode: "90210"
+                                    state: CA
+                                    street: 456 Oak Avenue
+                                    type: BILLING
+                                schema:
+                                    $ref: '#/components/schemas/AddressRequest'
+                        description: Address details to create
+                        required: true
+                    responses:
+                        "201":
+                            content:
+                                application/json:
+                                    example:
+                                        city: Los Angeles
+                                        country: USA
+                                        customerId: 123
+                                        id: 2
+                                        isDefault: false
+                                        postalCode: "90210"
+                                        state: CA
+                                        street: 456 Oak Avenue
+                                        type: BILLING
+                                    schema:
+                                        $ref: '#/components/schemas/Address'
+                            description: Address successfully created
+                        "400":
+                            content:
+                                application/json:
+                                    example:
+                                        code: INVALID_REQUEST
+                                        message: Invalid address data provided
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Invalid request data
+                        "404":
+                            content:
+                                application/json:
+                                    example:
+                                        code: NOT_FOUND
+                                        message: Customer not found
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Customer not found
+                        "409":
+                            content:
+                                application/json:
+                                    example:
+                                        code: CONFLICT
+                                        message: Default address already exists for customer
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Address already exists or conflict
+                        "500":
+                            content:
+                                application/json:
+                                    example:
+                                        code: INTERNAL_ERROR
+                                        message: Internal server error
+                                    schema:
+                                        $ref: '#/components/schemas/ErrorResponse'
+                            description: Internal server error
+                    summary: Create customer address
+                    tags:
+                        - addresses
+        servers:
+            - description: Local development server
+              url: http://localhost:8082/api/v1
+        tags:
+            - description: Operations related to customer addresses
+              name: addresses
+    meta:
+        id: spc_e16ef13805944cc8be920c553f1daff3
+        created: 1751034437453
+        modified: 1751034437454

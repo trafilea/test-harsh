@@ -24,6 +24,9 @@ collection:
           description: Retrieves the address details for a specific customer
           sortKey: -1750971001456
         method: GET
+        scripts:
+          preRequest: ""
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -42,6 +45,9 @@ collection:
           description: Creates a new address for a specific customer
           sortKey: -1750971001455
         method: POST
+        scripts:
+          preRequest: ""
+          afterResponse: ""
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -50,6 +56,9 @@ collection:
             send: true
             store: true
           rebuildPath: true
+    scripts:
+      afterResponse: ""
+      preRequest: ""
 cookieJar:
   name: Default Jar
   meta:

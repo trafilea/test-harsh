@@ -3,7 +3,7 @@ name: Address API 1.0.0
 meta:
   id: wrk_40d19e55fc174fb5a8585ae34f8f564f
   created: 1750970987604
-  modified: 1751034437449
+  modified: 1751034792411
   description: ""
 collection:
   - name: addresses
@@ -373,4 +373,4 @@ spec:
   meta:
     id: spc_e16ef13805944cc8be920c553f1daff3
     created: 1751034437453
-    modified: 1751034437454
+    modified: 1751034792403

@@ -73,6 +73,90 @@ paths:
               example:
                 code: "INTERNAL_ERROR"
                 message: "Internal server error"
+    post:
+      summary: Create customer address
+      description: Creates a new address for a specific customer
+      operationId: createCustomerAddress
+      tags:
+        - addresses
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Unique identifier of the customer
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+          example: 123
+      requestBody:
+        required: true
+        description: Address details to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+            example:
+              street: "456 Oak Avenue"
+              city: "Los Angeles"
+              state: "CA"
+              postalCode: "90210"
+              country: "USA"
+              type: "BILLING"
+              isDefault: false
+      responses:
+        '201':
+          description: Address successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+              example:
+                id: 2
+                customerId: 123
+                street: "456 Oak Avenue"
+                city: "Los Angeles"
+                state: "CA"
+                postalCode: "90210"
+                country: "USA"
+                type: "BILLING"
+                isDefault: false
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INVALID_REQUEST"
+                message: "Invalid address data provided"
+        '404':
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "Customer not found"
+        '409':
+          description: Address already exists or conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "CONFLICT"
+                message: "Default address already exists for customer"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "INTERNAL_ERROR"
+                message: "Internal server error"
 
 components:
   schemas:
@@ -130,6 +214,48 @@ components:
           description: Whether this is the default address for the customer
           example: true
 
+    AddressRequest:
+      type: object
+      description: Request payload for creating a new address
+      required:
+        - street
+        - city
+        - state
+        - postalCode
+        - country
+        - type
+        - isDefault
+      properties:
+        street:
+          type: string
+          description: Street address including house/building number
+          example: "456 Oak Avenue"
+        city:
+          type: string
+          description: City name
+          example: "Los Angeles"
+        state:
+          type: string
+          description: State or province
+          example: "CA"
+        postalCode:
+          type: string
+          description: Postal or ZIP code
+          example: "90210"
+        country:
+          type: string
+          description: Country name or code
+          example: "USA"
+        type:
+          type: string
+          description: Type of address (shipping, billing, etc.)
+          enum: ["SHIPPING", "BILLING", "BOTH"]
+          example: "BILLING"
+        isDefault:
+          type: boolean
+          description: Whether this should be the default address for the customer
+          example: false
+
     ErrorResponse:
       type: object
       description: Standard error response structure
@@ -143,6 +269,7 @@ components:
           enum:
             - INVALID_REQUEST
             - NOT_FOUND
+            - CONFLICT
             - INTERNAL_ERROR
           example: "NOT_FOUND"
         message:

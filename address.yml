@@ -10,6 +10,10 @@ info:
 servers:
   - url: http://localhost:8082/api/v1
     description: Local development server
+  - url: https://trafi.stage.com/api/v1
+    description: Staging server
+  - url: https://trafi.prod.com/api/v1
+    description: Production server
 
 paths:
   /customers/{customerId}/address:
@@ -29,6 +33,31 @@ paths:
             format: int64
             minimum: 1
           example: 123
+        - name: includeInactive
+          in: query
+          required: false
+          description: Include inactive addresses in the response
+          schema:
+            type: boolean
+            default: false
+          example: false
+        - name: addressType
+          in: query
+          required: false
+          description: Filter addresses by type
+          schema:
+            type: string
+            enum: ["SHIPPING", "BILLING", "BOTH"]
+          example: "SHIPPING"
+        - name: format
+          in: query
+          required: false
+          description: Response format preference
+          schema:
+            type: string
+            enum: ["json", "xml"]
+            default: "json"
+          example: "json"
       responses:
         '200':
           description: Successfully retrieved customer address
@@ -79,6 +108,8 @@ paths:
       operationId: createCustomerAddress
       tags:
         - addresses
+      security:
+        - bearerAuth: []
       parameters:
         - name: customerId
           in: path
@@ -89,6 +120,22 @@ paths:
             format: int64
             minimum: 1
           example: 123
+        - name: validateAddress
+          in: query
+          required: false
+          description: Validate address against postal service
+          schema:
+            type: boolean
+            default: true
+          example: true
+        - name: skipDuplicateCheck
+          in: query
+          required: false
+          description: Skip duplicate address validation
+          schema:
+            type: boolean
+            default: false
+          example: false
       requestBody:
         required: true
         description: Address details to create
@@ -130,6 +177,24 @@ paths:
               example:
                 code: "INVALID_REQUEST"
                 message: "Invalid address data provided"
+        '401':
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "UNAUTHORIZED"
+                message: "Authentication required"
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "FORBIDDEN"
+                message: "Insufficient permissions to create address"
         '404':
           description: Customer not found
           content:
@@ -163,6 +228,8 @@ paths:
       operationId: deleteCustomerAddress
       tags:
         - addresses
+      security:
+        - bearerAuth: []
       parameters:
         - name: customerId
           in: path
@@ -173,6 +240,22 @@ paths:
             format: int64
             minimum: 1
           example: 123
+        - name: force
+          in: query
+          required: false
+          description: Force delete even if it's the only address
+          schema:
+            type: boolean
+            default: false
+          example: false
+        - name: reason
+          in: query
+          required: false
+          description: Reason for deletion (for audit purposes)
+          schema:
+            type: string
+            maxLength: 500
+          example: "Customer request"
       responses:
         '204':
           description: Address successfully deleted (no content)
@@ -185,6 +268,24 @@ paths:
               example:
                 code: "INVALID_REQUEST"
                 message: "Invalid customer ID"
+        '401':
+          description: Unauthorized - Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "UNAUTHORIZED"
+                message: "Authentication required"
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "FORBIDDEN"
+                message: "Insufficient permissions to delete address"
         '404':
           description: Address not found for the customer
           content:
@@ -214,6 +315,13 @@ paths:
                 message: "Internal server error"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for API authentication
+  
   schemas:
     Address:
       type: object
@@ -326,6 +434,8 @@ components:
             - NOT_FOUND
             - CONFLICT
             - INTERNAL_ERROR
+            - UNAUTHORIZED
+            - FORBIDDEN
           example: "NOT_FOUND"
         message:
           type: string

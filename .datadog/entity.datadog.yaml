@@ -13,6 +13,7 @@ metadata:
   name: test-harsh
   displayName: Address API
   owner: platform-team
+  repository: https://github.com/trafilea/test-harsh
 spec:
   lifecycle: dev
   definition:

@@ -41,11 +41,12 @@ metadata:
   owner: platform-team
   links:
     - name: API Documentation
-      type: documentation
+      type: doc
       url: https://github.com/trafilea/test-harsh/blob/main/README.md
     - name: Repository
-      type: repository
+      type: repo
       url: https://github.com/trafilea/test-harsh
+      provider: github
   tags:
     - env:dev
     - team:platform
@@ -54,18 +55,16 @@ metadata:
     - domain:address-management
   contacts:
     - type: slack
+      name: Platform Team Slack
       contact: "#platform-team"
     - type: email
+      name: Platform Team Email
       contact: platform-team@company.com
 spec:
+  interface:
+    fileRef: "https://github.com/trafilea/test-harsh/blob/main/address.yml"
   lifecycle: dev
-  tier: "2"
-  type: rest
-  definition:
-    type: openapi
-    url: https://github.com/trafilea/test-harsh/blob/main/address.yml
-  dependsOn:
+  tier: high
+  type: REST
+  implementedBy:
     - service:test-harsh
-  consumers:
-    - service:user-service
-    - service:order-service

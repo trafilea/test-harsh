@@ -5,11 +5,13 @@ metadata:
   displayName: Test Harsh Service
   description: A Go-based microservice for address management and API operations
   owner: platform-team
-  repository: https://github.com/trafilea/test-harsh
   links:
     - name: Documentation
       type: documentation
       url: https://github.com/trafilea/test-harsh/blob/main/README.md
+    - name: Repository
+      type: repository
+      url: https://github.com/trafilea/test-harsh
   tags:
     - env:dev
     - team:platform
@@ -23,12 +25,10 @@ metadata:
       contact: platform-team@company.com
 spec:
   lifecycle: dev
-  tier: 3
+  tier: "3"
   type: web
   languages:
     - go
-  system: address-management
-  application: test-harsh
 
 ---
 
@@ -39,11 +39,13 @@ metadata:
   displayName: Address Management API
   description: RESTful API for managing customer addresses with validation and geocoding
   owner: platform-team
-  repository: https://github.com/trafilea/test-harsh
   links:
     - name: API Documentation
       type: documentation
       url: https://github.com/trafilea/test-harsh/blob/main/README.md
+    - name: Repository
+      type: repository
+      url: https://github.com/trafilea/test-harsh
   tags:
     - env:dev
     - team:platform
@@ -57,12 +59,11 @@ metadata:
       contact: platform-team@company.com
 spec:
   lifecycle: dev
-  tier: 2
+  tier: "2"
   type: rest
   definition:
     type: openapi
     url: https://github.com/trafilea/test-harsh/blob/main/address.yml
-  system: address-management
   dependsOn:
     - service:test-harsh
   consumers:

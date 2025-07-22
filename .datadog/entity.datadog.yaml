@@ -17,4 +17,4 @@ spec:
   lifecycle: dev
   definition:
     type: openapi
-    url: https://github.com/trafilea/test-harsh/blob/main/address.yml
+    url: https://github.com/trafilea/test-harsh/main/address.yml

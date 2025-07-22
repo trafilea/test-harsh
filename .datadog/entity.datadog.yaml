@@ -6,12 +6,14 @@ metadata:
   description: A Go-based microservice for address management and API operations
   owner: platform-team
   links:
-    - name: Documentation
-      type: documentation
+    - name: API Documentation
+      type: doc
       url: https://github.com/trafilea/test-harsh/blob/main/README.md
+      provider: github
     - name: Repository
-      type: repository
+      type: repo
       url: https://github.com/trafilea/test-harsh
+      provider: github
   tags:
     - env:dev
     - team:platform
@@ -43,6 +45,7 @@ metadata:
     - name: API Documentation
       type: doc
       url: https://github.com/trafilea/test-harsh/blob/main/README.md
+      provider: github
     - name: Repository
       type: repo
       url: https://github.com/trafilea/test-harsh

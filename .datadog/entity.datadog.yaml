@@ -2,20 +2,69 @@ apiVersion: v3
 kind: service
 metadata:
   name: test-harsh
+  displayName: Test Harsh Service
+  description: A Go-based microservice for address management and API operations
+  owner: platform-team
+  repository: https://github.com/trafilea/test-harsh
+  links:
+    - name: Documentation
+      type: documentation
+      url: https://github.com/trafilea/test-harsh/blob/main/README.md
+  tags:
+    - env:dev
+    - team:platform
+    - language:go
+    - type:microservice
+    - domain:address-management
+  contacts:
+    - type: slack
+      contact: "#platform-team"
+    - type: email
+      contact: platform-team@company.com
 spec:
   lifecycle: dev
+  tier: 3
+  type: web
+  languages:
+    - go
+  system: address-management
+  application: test-harsh
 
 ---
 
 apiVersion: v3
 kind: api
 metadata:
-  name: test-harsh
-  displayName: Address API
+  name: address-api
+  displayName: Address Management API
+  description: RESTful API for managing customer addresses with validation and geocoding
   owner: platform-team
   repository: https://github.com/trafilea/test-harsh
+  links:
+    - name: API Documentation
+      type: documentation
+      url: https://github.com/trafilea/test-harsh/blob/main/README.md
+  tags:
+    - env:dev
+    - team:platform
+    - api-version:v1
+    - protocol:rest
+    - domain:address-management
+  contacts:
+    - type: slack
+      contact: "#platform-team"
+    - type: email
+      contact: platform-team@company.com
 spec:
   lifecycle: dev
+  tier: 2
+  type: rest
   definition:
     type: openapi
-    url: https://github.com/trafilea/test-harsh/main/address.yml
+    url: https://github.com/trafilea/test-harsh/blob/main/address.yml
+  system: address-management
+  dependsOn:
+    - service:test-harsh
+  consumers:
+    - service:user-service
+    - service:order-service

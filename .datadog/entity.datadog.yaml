@@ -1,0 +1,20 @@
+apiVersion: v3
+kind: service
+metadata:
+  name: test-harsh
+spec:
+  lifecycle: dev
+
+---
+
+apiVersion: v3
+kind: api
+metadata:
+  name: test-harsh
+  displayName: Address API
+  owner: platform-team
+spec:
+  lifecycle: dev
+  definition:
+    type: openapi
+    url: https://github.com/trafilea/test-harsh/blob/main/address.yml

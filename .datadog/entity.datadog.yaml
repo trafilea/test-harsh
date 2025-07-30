@@ -22,15 +22,24 @@ metadata:
     - domain:address-management
   contacts:
     - type: slack
-      contact: "#platform-team"
+      contact: https://trafilea.slack.com/archives/C01M221RWAX
+      name: it-platform
     - type: email
       contact: platform-team@company.com
+      name: it-platform
 spec:
   lifecycle: dev
   tier: "3"
-  type: web
   languages:
     - go
+  type: web
+  dependsOn:
+    - api:test-app
+  componentOf:
+    - api:address-api
+integrations:
+  pagerduty:
+    serviceURL: https://trafilea.pagerduty.com/service-directory/test-harsh
 
 ---
 

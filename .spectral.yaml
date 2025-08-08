@@ -1,0 +1,162 @@
+extends: ["spectral:oas"]
+
+rules:
+
+  # ───────────────────────────────
+  # Naming & Path Conventions
+  # ───────────────────────────────
+  paths-kebab-case:
+    description: Path segments must use kebab-case (e.g., /customer-payments)
+    message: "Path segment '{{value}}' should be kebab-case."
+    severity: error
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^(/[a-z0-9]+(-[a-z0-9]+)*)+$"
+
+  operation-operationId:
+    description: operationId should be camelCase
+    severity: warn
+    given: "$.paths[*][*]"
+    then:
+      field: operationId
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-zA-Z0-9]*$"
+
+  path-versioning:
+    description: Use versioning in the base path (e.g., /v1/)
+    severity: warn
+    given: "$.paths[*]~"
+    then:
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+(/|$)"
+
+  # ───────────────────────────────
+  # HTTP Response Standards
+  # ───────────────────────────────
+  require-2xx-response:
+    description: Every operation must have at least one 2xx response
+    severity: error
+    given: "$.paths[*][*].responses"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          patternProperties:
+            "^2\\d{2}$": {}
+          minProperties: 1
+
+  avoid-ambiguous-422:
+    description: Avoid 422 unless semantically validated
+    severity: warn
+    given: "$.paths[*][*].responses['422']"
+    then:
+      function: truthy
+
+  content-type-json:
+    description: All responses should define application/json content type
+    severity: error
+    given: "$.paths[*][*].responses[*].content"
+    then:
+      function: defined
+      functionOptions:
+        field: "application/json"
+
+  # ───────────────────────────────
+  # Error Object Standards
+  # ───────────────────────────────
+  error-schema-structure:
+    description: Errors should follow the standard structure (code, message, details)
+    severity: warn
+    given: "$.components.schemas.Error"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: object
+          required: ["code", "message"]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: string
+
+  # ───────────────────────────────
+  # Field & Schema Hygiene
+  # ───────────────────────────────
+  enforce-id-format:
+    description: ID fields should be UUID or integer
+    severity: warn
+    given: "$..id"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          type: [string, integer]
+
+  enforce-timestamps:
+    description: Common resources should include created_at and updated_at
+    severity: warn
+    given: "$.components.schemas.*"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          required: ["created_at", "updated_at"]
+
+  no-nullable-booleans:
+    description: Avoid nullable booleans; use explicit true/false or enums
+    severity: error
+    given: "$..[?(@.type == 'boolean')]"
+    then:
+      field: nullable
+      function: falsy
+
+  # ───────────────────────────────
+  # Pagination Guidelines
+  # ───────────────────────────────
+  pagination-query-params:
+    description: Paginated endpoints must support standard query params
+    severity: warn
+    given: "$.paths[*][get].parameters[*]"
+    then:
+      function: truthy
+      functionOptions:
+        property: name
+        match: "^(limit|offset|cursor)$"
+
+  # ───────────────────────────────
+  # Documentation Quality
+  # ───────────────────────────────
+  avoid-empty-descriptions:
+    description: Descriptions must not be empty
+    severity: warn
+    given: "$..description"
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "^\\s*$"
+
+  no-inline-enums:
+    description: Enums must be defined as reusable schemas
+    severity: warn
+    given: "$..[?(@.enum && !@.title)]"
+    then:
+      function: falsy
+  extends: ["spectral:oas"]
+
+  require-x-owner-and-team:
+    description: Every spec must define x-owner and x-team metadata under the info object.
+    severity: error
+    given: "$.info"
+    then:
+      - field: x-owner
+        function: defined
+      - field: x-team
+        function: defined
